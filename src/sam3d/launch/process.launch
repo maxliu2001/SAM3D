@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="sam3d" type="listener.py" name="listener" output="screen">
+    </node>
+</launch>
