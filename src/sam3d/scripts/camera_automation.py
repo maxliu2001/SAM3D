@@ -10,9 +10,9 @@ class CameraAutomation:
         rospy.init_node('camera_automation')
 
         # Configure launch settings
-        self.launch_file = "/opt/ros/noetic/share/realsense2_camera/launch/rs_camera.launch"
+        self.launch_file = "/home/maxliu/catkin_ws/src/sam3d/launch/camera.launch"
         self.bag_file = os.path.expanduser("~") + "/test_cam_data.bag"
-        self.topics_to_record = ["/camera/color/image_raw", "/camera/depth/image_rec_raw"]
+        self.topics_to_record = ["/camera/color/image_raw", "/camera/depth/color/points", "/camera/aligned_depth_to_color/image_raw"]
 
         self.launch_proc = None
         self.record_proc = None

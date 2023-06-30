@@ -193,7 +193,7 @@ include_directories(
 #   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 # )
 
-catkin_install_python(PROGRAMS scripts/process.py scripts/listener.py scripts/camera_automation.py
+catkin_install_python(PROGRAMS scripts/process.py scripts/listener.py scripts/camera_automation.py scripts/bag_publisher.py scripts/listener_depth.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

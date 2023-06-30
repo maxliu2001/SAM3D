@@ -1,8 +1,10 @@
 devel/
+install/
 logs/
 build/
 bin/
 lib/
+media/
 .vscode/
 msg_gen/
 srv_gen/

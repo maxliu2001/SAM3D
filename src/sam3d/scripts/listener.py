@@ -40,26 +40,21 @@ import rospy
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 import cv2
-import subprocess
-import os
-import signal
 
 class MaskGenerator:
     def __init__(self):
         self.count = 0
-        self.bag_proc = None
-        self.bagged_file_path = "/home/maxliu/catkin_ws/src/sam3d/media/test2.bag"
-        self.topic = '/device_0/sensor_1/Color_0/image/data'
-        self.temp_dir = '/home/maxliu/catkin_ws/src/sam3d/media/'
+        self.topic = "/camera/color/image_raw"
+        self.temp_dir = '/home/maxliu/catkin_ws/src/sam3d/media/test'
 
     def img_callback(self, img_msg):
         rospy.loginfo("reveived image")
         bridge = CvBridge()
         cv_img = bridge.imgmsg_to_cv2(img_msg, "bgr8")
-        cv2.imwrite(self.temp_dir+'image{}.png'.format(self.count), cv_img)
+        cv2.imwrite(self.temp_dir+'image{}.jpg'.format(self.count), cv_img)
         self.count += 1
 
-    def start_listener(self):
+    def run(self):
 
         # In ROS, nodes are uniquely named. If two nodes with the same
         # name are launched, the previous one is kicked off. The
@@ -67,31 +62,11 @@ class MaskGenerator:
         # name for our 'listener' node so that multiple listeners can
         # run simultaneously.
         rospy.init_node('listener', anonymous=True)
-        # os.mkdir(self.temp_dir)
-        rospy.loginfo("start subscribing")
+        rospy.loginfo("start subscribing RGB image")
         rospy.Subscriber(self.topic, Image, self.img_callback)
-    
-
-    def play_from_bag(self):
-        if not self.bag_proc:
-            arg_li = ["rosbag", "play", self.bagged_file_path]
-            self.bag_proc = subprocess.Popen(arg_li)
-            rospy.loginfo("rosbag playing")
-    
-    def run(self):
-        self.start_listener()
-        rospy.sleep(1)
-        self.play_from_bag()
-
-        rospy.on_shutdown(self.shutdown_hook)
-    
-    def shutdown_hook(self):
-        if self.bag_proc:
-            self.bag_proc.send_signal(signal.SIGINT)
+        rospy.spin()
 
 
 if __name__ == '__main__':
     img_listener = MaskGenerator()
     img_listener.run()
-
-    rospy.spin()

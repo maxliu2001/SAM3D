@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="sam3d" type="process.py" name="generator" output="screen"/>
+</launch>
