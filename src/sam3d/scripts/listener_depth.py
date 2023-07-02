@@ -14,7 +14,7 @@ class DepthGenerator:
         self.count = 0
         self.topic = "/camera/aligned_depth_to_color/image_raw"
         self.resgistry = {}
-        self.temp_file = open('/home/maxliu/catkin_ws/src/sam3d/media/depthmap.npz', 'wb')
+        self.temp_file = '/home/maxliu/catkin_ws/src/sam3d/media/depthmap.npz'
     
     def img_callback(self, img_msg):
         rospy.loginfo("received depth image")
@@ -34,7 +34,6 @@ class DepthGenerator:
     
     def shutdown_hook(self):
         np.savez_compressed(self.temp_file, **self.resgistry)
-        self.temp_file.close()
 
 if __name__ == '__main__':
     depth_rec = DepthGenerator()
