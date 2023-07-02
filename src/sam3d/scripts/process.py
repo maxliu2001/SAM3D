@@ -6,7 +6,6 @@ from segment_anything import SamAutomaticMaskGenerator, sam_model_registry, SamP
 
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
 from pathlib import Path
 
 class Generator:
@@ -19,10 +18,10 @@ class Generator:
         rospy.loginfo('initialized SAM3D')
         self.registry = {}
         self.filepath = '/home/maxliu/catkin_ws/src/sam3d/media/test'
-        self.temp_file = open('/home/maxliu/catkin_ws/src/sam3d/media/masks.npz', 'wb')
+        self.temp_file = '/home/maxliu/catkin_ws/src/sam3d/media/masks.npz'
     
-    def generate_bounding_box(dim, width):
-        height, width, _ = dim
+    def generate_bounding_box(self, li, width):
+        height, width = li[0], li[1]
         b = 0 + (height - width)//2
         d = b + width
         a = 0 + (width - width)//2
@@ -35,10 +34,13 @@ class Generator:
         rospy.loginfo(pathli)
         for path in pathli:
             rospy.loginfo(path)
-            img = cv2.imread('path')
-            image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            image = plt.imread(path)
+            # change color config from BGR to RGB for matplot
+            image = image[..., ::-1]
             self.predictor.set_image(image)
-            a, b, c, d = self.generate_bounding_box(image.shape, 500)
+            # rospy.loginfo(image)
+            # rospy.loginfo(image.shape)
+            a, b, c, d = self.generate_bounding_box(list(image.shape), 500)
             input_box = np.array([a, b, c, d])
 
             masks, _, _ = self.predictor.predict(
@@ -55,7 +57,6 @@ class Generator:
     
     def shutdown_hook(self):
         np.savez_compressed(self.temp_file, **self.registry)
-        self.temp_file.close()
 
 if __name__ == '__main__':
     try:
