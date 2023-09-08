@@ -3,10 +3,11 @@
 import rospy
 import subprocess
 import signal
+import rospkg
 
 class BagPublisher:
     def __init__(self):
-        self.bagged_file_path = "/home/maxliu/test_cam_data.bag"
+        self.bagged_file_path = rospkg.RosPack().get_path('sam3d') + "/media/test_cam_data.bag"
         self.process = None
         self.pub = None
 

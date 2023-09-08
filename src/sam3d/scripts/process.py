@@ -7,18 +7,20 @@ from segment_anything import SamAutomaticMaskGenerator, sam_model_registry, SamP
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
+import rospkg
 
 class Generator:
     def __init__(self):
         rospy.init_node('generator', anonymous=True)
         rospy.loginfo('registered node')
-        sam = sam_model_registry["vit_h"](checkpoint="/home/maxliu/sam_vit_h_4b8939.pth")
+        sam = sam_model_registry["vit_h"](checkpoint="~/sam_vit_h_4b8939.pth")
         rospy.loginfo('registered model')
         self.predictor = SamPredictor(sam)
         rospy.loginfo('initialized SAM3D')
         self.registry = {}
-        self.filepath = '/home/maxliu/catkin_ws/src/sam3d/media/test'
-        self.temp_file = '/home/maxliu/catkin_ws/src/sam3d/media/masks.npz'
+        self.filepath = rospkg.RosPack().get_path('sam3d') + '/media/test'
+        self.temp_file = rospkg.RosPack().get_path('sam3d') + '/media/masks.npz'
+        self.input_box = None
     
     def generate_bounding_box(self, li, width):
         height, width = li[0], li[1]
@@ -38,15 +40,27 @@ class Generator:
             # change color config from BGR to RGB for matplot
             image = image[..., ::-1]
             self.predictor.set_image(image)
-            # rospy.loginfo(image)
-            # rospy.loginfo(image.shape)
+            
+            # a, b, c, d = self.generate_bounding_box(list(image.shape), 500)
+            # input_box = np.array([a, b, c, d])
+            # input_point = np.array([[300,300]])
+            # input_label = np.array([1])
+
+            # masks, _, _ = self.predictor.predict(
+            #     point_coords = input_point,
+            #     point_labels = input_label,
+            #     box = None,
+            #     multimask_output=False,
+            # )
+
             a, b, c, d = self.generate_bounding_box(list(image.shape), 500)
-            input_box = np.array([a, b, c, d])
+            if not self.input_box:
+                self.input_box = np.array([a, b, c, d])
 
             masks, _, _ = self.predictor.predict(
-                point_coords=None,
-                point_labels=None,
-                box = input_box,
+                point_coords = None,
+                point_labels = None,
+                box = self.input_box,
                 multimask_output=False,
             )
 

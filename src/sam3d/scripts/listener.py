@@ -40,12 +40,13 @@ import rospy
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 import cv2
+import rospkg
 
 class MaskGenerator:
     def __init__(self):
         self.count = 0
         self.topic = "/camera/color/image_raw"
-        self.temp_dir = '/home/maxliu/catkin_ws/src/sam3d/media/test'
+        self.temp_dir = rospkg.RosPack().get_path('sam3d') + '/media/test'
 
     def img_callback(self, img_msg):
         rospy.loginfo("reveived image")
@@ -55,12 +56,6 @@ class MaskGenerator:
         self.count += 1
 
     def run(self):
-
-        # In ROS, nodes are uniquely named. If two nodes with the same
-        # name are launched, the previous one is kicked off. The
-        # anonymous=True flag means that rospy will choose a unique
-        # name for our 'listener' node so that multiple listeners can
-        # run simultaneously.
         rospy.init_node('listener', anonymous=True)
         rospy.loginfo("start subscribing RGB image")
         rospy.Subscriber(self.topic, Image, self.img_callback)

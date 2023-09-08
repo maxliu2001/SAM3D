@@ -8,13 +8,14 @@ import cv2
 import subprocess
 import os
 import signal
+import rospkg
 
 class DepthGenerator:
     def __init__(self):
         self.count = 0
         self.topic = "/camera/aligned_depth_to_color/image_raw"
         self.resgistry = {}
-        self.temp_file = '/home/maxliu/catkin_ws/src/sam3d/media/depthmap.npz'
+        self.temp_file = rospkg.RosPack().get_path('sam3d') + '/media/depthmap.npz'
     
     def img_callback(self, img_msg):
         rospy.loginfo("received depth image")
