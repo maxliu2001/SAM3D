@@ -78,4 +78,4 @@ if __name__ == '__main__':
         gen.collect_mask()
         gen.shutdown_hook()
     except rospy.ROSInterruptException:
-          pass
+        pass
