@@ -9,7 +9,7 @@ class VisPointCloud:
         self.media_file_root = rospkg.RosPack().get_path('sam3d') + "/media/test/"
         self.output = self.media_file_root + 'output.ply'
         self.vis = o3d.visualization.Visualizer()
-          
+
     def visualize(self):
         # self.vis.create_window(height=400, width=400)
         # coordinate_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(

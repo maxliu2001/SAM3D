@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="sam3d" type="autoprocess.py" name="maskgen" output="screen"/>
+</launch>

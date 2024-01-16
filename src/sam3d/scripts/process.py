@@ -65,6 +65,7 @@ class Generator:
             )
 
             rospy.on_shutdown(self.shutdown_hook)
+            
             # write it in a file
             rospy.loginfo(masks)
             self.registry[path.stem] = masks

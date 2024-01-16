@@ -24,7 +24,7 @@ class GeneratePointCLoud:
                     # open image resource for color channel extraction
                     image = cv2.imread(self.media_file_root+each+'.jpg')
                     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                                         
+
                     # matching file name to id stored in depth
                     temp = re.compile("([a-zA-Z]+)([0-9]+)")
                     _, res = temp.match(each).groups()
