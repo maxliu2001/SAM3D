@@ -1,8 +1,9 @@
+#! /usr/bin/env python
+
 import numpy as np
-import torch
 import matplotlib.pyplot as plt
 import cv2
-from .selector import SAMSelector
+from sam3d_gui.selector import SAMSelector
 
 # Helper functions
 def show_mask(mask, ax, random_color=False):
@@ -26,13 +27,13 @@ def show_box(box, ax):
     ax.add_patch(plt.Rectangle((x0, y0), w, h, edgecolor='green', facecolor=(0,0,0,0), lw=2))
 
 if __name__ == '__main__':
-    sam_checkpoint = "./sam_vit_h_4b8939.pth"
+    # sam_checkpoint = "./sam_vit_h_4b8939.pth"
     model_type = "vit_h"
     # Initalize SAM Selector
     print('Initializing Selector')
-    selector = SAMSelector(sam_checkpoint, model_type)
+    selector = SAMSelector()
     print('Selector Initialized.')
-    masks, scores, _ = selector.gen_seg('./testimage155.jpg')
+    masks, scores, _ =  selector.gen_seg('./testimg.jpeg')
 
     # Visualize Masks for manual selection
     input_point = selector.points

@@ -11,7 +11,7 @@ class CameraAutomation:
 
         # Configure launch settings
         self.launch_file = rospkg.RosPack().get_path('sam3d') + "/launch/camera.launch"
-        self.bag_file = rospkg.RosPack().get_path('sam3d') + "/media/test_cam_data.bag"
+        self.bag_file = rospkg.RosPack().get_path('sam3d') + "/media/test_cam_data.bag" # specify path to rosbag
         self.topics_to_record = ["/camera/color/image_raw", "/camera/depth/color/points", "/camera/aligned_depth_to_color/image_raw"]
 
         self.launch_proc = None
