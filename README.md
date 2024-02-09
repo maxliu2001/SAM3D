@@ -20,3 +20,8 @@ These scripts can be launched using `roslaunch bag_subscribe.launch`.
 #### ros_sam Integration with Customizable GUI
 After processing the bag file. We can now utilize ros_sam wrapper with customizable GUI to generate segmentation masks. We can run `roslaunch ros_sam.launch` to trigger `autoprocess.py` script in sam3d. The `autoprocess.py` script launches the `SAMClient` from `ros_sam` and generates masks. It also allows visualization of the generated mask. The image path may need to manually adjusted. The image path is the local path to the image in `sam3d/media` subdirectory.
 
+#### How to use
+- Download model checkpoint into ros_sam models directory
+- setup sam3d_gui and download all requirement files (Working on a comprehensive main function)
+- Run `rosrun ros_sam sam_node.py` (May need to init roscore beforehand)
+- Run test file (GPU driver update needed)
