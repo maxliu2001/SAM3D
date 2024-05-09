@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QApplication
 from .sam3d_error import SAM3DError
 import cv2
 from ros_sam import SAMClient
+import rospy
 
 class SAMSelector:
     """ Initialze a SAM3D model and generates segmentation mask given an image"""
@@ -15,6 +16,11 @@ class SAMSelector:
         self.points = []
         self.points_masks = []
         self.box = []
+
+        print('Waiting for SAM service...')
+        rospy.wait_for_service('ros_sam/segment')
+        print('Found SAM service')
+        
         self.client = SAMClient('ros_sam')
 
     def launch_gui(self, filepath):
@@ -59,11 +65,10 @@ class SAMSelector:
             self.clear_config()
             self.launch_gui(image_path)
 
-        print(f'Selected point {self.points}')
-        print(f'Selected point masks {self.points_masks}')
+        print(f'Selected points \n {self.points}')
+        print(f'Selected point masks \n {self.points_masks}')
         
-        img = cv2.imread('path/to/image.png')
         points = np.array(self.points)
-        labels = self.points_masks
-        masks, scores = self.client.segment(img, points, labels)
+        labels = np.array(self.points_masks)
+        masks, scores = self.client.segment(image, points, labels)
         return masks, scores

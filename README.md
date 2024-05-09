@@ -22,6 +22,9 @@ After processing the bag file. We can now utilize ros_sam wrapper with customiza
 
 #### How to use
 - Download model checkpoint into ros_sam models directory
+- Run `catkin_make` from home directory and `catkin_make install`
+- Run `source devel/setup.bash`
 - setup sam3d_gui and download all requirement files (Working on a comprehensive main function)
 - Run `rosrun ros_sam sam_node.py` (May need to init roscore beforehand)
+- On a separate window, launch `rosrun sam3d_gui test.py`
 - Run test file (GPU driver update needed)

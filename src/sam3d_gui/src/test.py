@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from sam3d_gui.selector import SAMSelector
+import rospkg
 
 # Helper functions
 def show_mask(mask, ax, random_color=False):
@@ -29,16 +30,18 @@ def show_box(box, ax):
 if __name__ == '__main__':
     # sam_checkpoint = "./sam_vit_h_4b8939.pth"
     model_type = "vit_h"
+    image_path = '/home/maxliu/Desktop/SAM3D/src/sam3d_gui/src/testimg.jpeg'
+    print(image_path)
     # Initalize SAM Selector
     print('Initializing Selector')
     selector = SAMSelector()
     print('Selector Initialized.')
-    masks, scores, _ =  selector.gen_seg('./testimg.jpeg')
+    masks, scores, _ =  selector.gen_seg(image_path)
 
     # Visualize Masks for manual selection
     input_point = selector.points
     input_label = selector.points_masks
-    image = cv2.imread('./testimage155.jpg')
+    image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     for i, (mask, score) in enumerate(zip(masks, scores)):
         print(mask)
