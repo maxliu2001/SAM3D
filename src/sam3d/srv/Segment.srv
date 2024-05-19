@@ -1,0 +1,12 @@
+# Request
+sensor_msgs/Image image
+geometry_msgs/Point[] points
+int32[] point_masks
+int32[] input_box
+bool multimask
+
+---
+# Response
+sensor_msgs/Image[] masks
+float32[] scores
+sensor_msgs/Image[] logits

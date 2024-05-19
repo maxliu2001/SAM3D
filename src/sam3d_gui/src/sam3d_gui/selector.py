@@ -1,11 +1,9 @@
 import numpy as np
-from segment_anything import *
 from .gui import ImageViewer
 import sys
 from PyQt5.QtWidgets import QApplication
 from .sam3d_error import SAM3DError
 import cv2
-from ros_sam import SAMClient
 import rospy
 
 class SAMSelector:
@@ -21,7 +19,7 @@ class SAMSelector:
         rospy.wait_for_service('ros_sam/segment')
         print('Found SAM service')
         
-        self.client = SAMClient('ros_sam')
+        self.client = None
 
     def launch_gui(self, filepath):
         ''' Launch GUI and collect mask and bounding box. '''
@@ -70,5 +68,6 @@ class SAMSelector:
         
         points = np.array(self.points)
         labels = np.array(self.points_masks)
-        masks, scores = self.client.segment(image, points, labels)
+        masks, scores = None, None
+        # self.client.segment(image, points, labels)
         return masks, scores
