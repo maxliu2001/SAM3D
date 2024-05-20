@@ -13,10 +13,12 @@ class SAM_client(metaclass=SingletonMeta):
     def set_image(self, image):
         return self.predictor.set_image(image)
 
-    def predict(self, input_point, input_label, multimask_bool):
+    def predict(self, input_point, input_label, mask_input, input_box, multimask_bool):
         masks, scores, logits = self.predictor.predict(
             point_coords=input_point,
             point_labels=input_label,
+            mask_input=mask_input,
+            box=input_box,
             multimask_output=multimask_bool
         )
         return masks, scores, logits

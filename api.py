@@ -31,15 +31,24 @@ def predict():
         singleton = SAM_client()
         input_point = request.json.get('input_point')
         input_label = request.json.get('input_label')
+        mask_input = request.json.get('mask_input')
+        input_box = request.json.get('input_box')
         multimask = request.json.get('multimask')
-
-        if input_point is None or input_label is None:
-            raise ValueError("Invalid input: input_point and input_label are required")
 
         input_point = np.array(input_point)
         input_label = np.array(input_label)
+        mask_input = np.array(mask_input) if mask_input is not None else None
+        input_box = np.array(input_box) if input_box else None
 
-        mask, scores, logit = singleton.predict(input_point, input_label, multimask)
+        if input_box is not None and input_box.size == 0:
+            input_box = None
+
+        if mask_input is not None and mask_input.size > 0:
+            mask_input = mask_input[np.newaxis, :, :]
+        else:
+            mask_input = None
+
+        mask, scores, logit = singleton.predict(input_point, input_label, mask_input, input_box, multimask)
         mask = mask.tolist()
         scores = scores.tolist()
         logit = logit.tolist()
