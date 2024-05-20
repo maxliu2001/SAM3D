@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import rospy
-from sensor_msgs.msg import Image
-from geometry_msgs.msg import Point
 from sam3d.srv import Segment, SegmentResponse
 import numpy as np
 from cv_bridge import CvBridge
@@ -65,26 +63,25 @@ class SAMNode:
                 
                 # Wait for the GUI task to signal completion
                 gui_event.wait()
-                
+
+                # Set variables to None if the arrays are empty
+                input_points = np.array(self.selector.points) if self.selector.points.size > 0 else None
+                input_labels = np.array(self.selector.points_masks) if self.selector.points_masks.size > 0 else None
+                input_boxes = np.array(self.selector.box) if self.selector.box.size > 0 else None
+
                 # Prepare response after GUI task completion
-                input_points = np.array(self.selector.points)
-                input_labels = np.array(self.selector.points_masks)
-                input_boxes = np.array(self.selector.box)
-
-                # Check if the required data is available
-                if len(input_points) == 0 or len(input_labels) == 0 or len(input_boxes) == 0:
-                    return SegmentResponse(masks=[], scores=[], logits=[])
-
-                # Generate mask from SAM
                 pred_url = ''
                 pred_headers = {'Content-Type': 'application/json'}
+
+                # Prepare payload
                 pred_payload = {
-                    'input_point': input_points.tolist(),
-                    'input_label': input_labels.tolist(),
+                    'input_point': input_points.tolist() if input_points is not None else None,
+                    'input_label': input_labels.tolist() if input_labels is not None else None,
                     'mask_input':  None,
-                    'input_box': input_boxes.tolist(),
+                    'input_box': input_boxes.tolist() if input_boxes is not None else None,
                     'multimask': req.multimask
                 }
+
                 response = requests.post(pred_url, headers=pred_headers, data=json.dumps(pred_payload))
 
                 if response.status_code != 200:
@@ -109,11 +106,11 @@ class SAMNode:
                 ros_masked_images = [bridge.cv2_to_imgmsg(masked_image, encoding="rgb8") for masked_image in masked_images]
 
                 return SegmentResponse(masks=ros_masked_images, scores=scores.tolist(), logits=ros_logits)
-            else:
-                # Extract input arrays from request
-                input_box = np.array(req.input_box)
-                input_point = np.array([[point.x, point.y] for point in req.points])
-                input_label = np.array(req.point_masks, dtype=int)
+
+            # Extract input arrays from request
+            input_box = np.array(req.input_box)
+            input_point = np.array([[point.x, point.y] for point in req.points])
+            input_label = np.array(req.point_masks, dtype=int)
 
             # Generate mask from SAM
             pred_url = ''

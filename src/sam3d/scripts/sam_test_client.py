@@ -10,11 +10,9 @@ import cv2
 from cv_bridge import CvBridge
 import matplotlib.pyplot as plt
 
-# helper for visualization
-from sam3d_gui import show_mask, show_points
 
 def create_test_image():
-    image_path = 'src/sam3d/testimg.jpeg'
+    image_path = 'src/sam3d/truck.jpg'
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     return image
@@ -42,6 +40,7 @@ def basic_tests(segment_image):
 
     # Set the boolean flag
     req.multimask = True
+    req.manual = False
 
     # Call the service
     resp = segment_image(req)
@@ -51,7 +50,7 @@ def basic_tests(segment_image):
 
     for i, (mask, score) in enumerate(zip(resp.masks, resp.scores)):
         plt.figure(figsize=(10,10))
-        mask_image = bridge.imgmsg_to_cv2(mask, desired_encoding="bgr8")
+        mask_image = bridge.imgmsg_to_cv2(mask, desired_encoding="rgb8")
         plt.imshow(mask_image)
         plt.title(f"Mask {i+1}, Score: {score:.3f}", fontsize=18)
         plt.axis('off')
@@ -84,12 +83,13 @@ def basic_tests(segment_image):
 
     # Set the boolean flag
     new_req.multimask = False
+    req.manual = False
 
     # Call the service with mask input
     resp = segment_image(new_req)
 
     plt.figure(figsize=(10,10))
-    best_mask_image = bridge.imgmsg_to_cv2(resp.masks[0], desired_encoding="bgr8")
+    best_mask_image = bridge.imgmsg_to_cv2(resp.masks[0], desired_encoding="rgb8")
     plt.imshow(best_mask_image)
     plt.title(f"Best Mask As Input", fontsize=18)
     plt.axis('off')
@@ -107,7 +107,7 @@ def basic_tests(segment_image):
     resp = segment_image(box_req)
 
     if resp.masks:
-        best_mask_image = bridge.imgmsg_to_cv2(resp.masks[0], desired_encoding="bgr8")
+        best_mask_image = bridge.imgmsg_to_cv2(resp.masks[0], desired_encoding="rgb8")
         plt.imshow(best_mask_image)
         plt.title(f"Box Generated Mask", fontsize=18)
         plt.axis('off')
@@ -129,10 +129,11 @@ def basic_tests(segment_image):
     box_req.points = [point1]
     box_req.point_masks = [0]
     box_req.multimask = False
+    req.manual = False
     resp = segment_image(box_req)
 
     if resp.masks:
-        best_mask_image = bridge.imgmsg_to_cv2(resp.masks[0], desired_encoding="bgr8")
+        best_mask_image = bridge.imgmsg_to_cv2(resp.masks[0], desired_encoding="rgb8")
         plt.imshow(best_mask_image)
         plt.title(f"Box and Point Generated Mask", fontsize=18)
         plt.axis('off')
@@ -151,7 +152,7 @@ def main():
         segment_image = rospy.ServiceProxy('segment_image', Segment)
 
         # Running basic tests from SAM notebook
-        # basic_tests(segment_image)
+        basic_tests(segment_image)
 
         # Testing GUI integration
         req = SegmentRequest()
