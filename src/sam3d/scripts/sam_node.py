@@ -19,10 +19,16 @@ def handle_process_image(req):
     rospy.loginfo("Received an image and %d points", len(req.points))
     rospy.loginfo("Received point masks: %s", str(req.point_masks))
     rospy.loginfo("Received input box: %s", str(req.input_box))
+    rospy.loginfo("Received mask input: %s", str(req.mask_input.data))
     rospy.loginfo("Multimask flag: %s", str(req.multimask))
 
     # Convert ROS image to OpenCV image
-    cv_image = cv2.cvtColor(bridge.imgmsg_to_cv2(req.image), cv2.COLOR_BGR2RGB)
+    cv_image = cv2.cvtColor(bridge.imgmsg_to_cv2(req.image, "bgr8"), cv2.COLOR_BGR2RGB)
+
+    # Convert mask input to array
+    mask_input = None
+    if req.mask_input.data:
+        mask_input = bridge.imgmsg_to_cv2(req.mask_input, desired_encoding="32FC1")
 
     # Convert OpenCV image to json payload
     _, buffer = cv2.imencode('.jpg', cv_image)
@@ -47,6 +53,8 @@ def handle_process_image(req):
     pred_payload = {
         'input_point': input_point.tolist(),
         'input_label': input_label.tolist(),
+        'mask_input':  mask_input.tolist() if mask_input is not None else None,
+        'input_box': input_box.tolist(),
         'multimask': req.multimask
     }
     response = requests.post(pred_url, headers=headers, data=json.dumps(pred_payload))
@@ -69,9 +77,9 @@ def handle_process_image(req):
         masked_image[mask == 0] = 0
         masked_images.append(masked_image)
 
-    ros_masks = [bridge.cv2_to_imgmsg(mask) for mask in uint8_masks]
+    # ros_masks = [bridge.cv2_to_imgmsg(mask) for mask in uint8_masks]
     ros_logits = [bridge.cv2_to_imgmsg(logit) for logit in logits]
-    ros_masked_images = [bridge.cv2_to_imgmsg(masked_image, encoding="bgr8") for masked_image in masked_images]
+    ros_masked_images = [bridge.cv2_to_imgmsg(masked_image, encoding="rgb8") for masked_image in masked_images]
 
     return SegmentResponse(masks=ros_masked_images, scores=scores.tolist(), logits=ros_logits)
 
