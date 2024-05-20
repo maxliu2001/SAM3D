@@ -40,6 +40,12 @@ def predict():
         mask_input = np.array(mask_input) if mask_input is not None else None
         input_box = np.array(input_box) if input_box else None
 
+        if input_point.size == 0:
+            input_point = None
+        
+        if input_label.size == 0:
+            input_label = None
+
         if input_box is not None and input_box.size == 0:
             input_box = None
 
