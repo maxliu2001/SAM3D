@@ -4,6 +4,7 @@ geometry_msgs/Point[] points
 int32[] point_masks
 int32[] input_box
 bool multimask
+bool manual
 sensor_msgs/Image mask_input
 ---
 # Response

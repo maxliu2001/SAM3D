@@ -1,6 +1,1 @@
-opencv-python
 pyqt5
-numpy
-torch
-torchvision
-cv2
