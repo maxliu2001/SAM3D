@@ -1,30 +1,48 @@
-# ros_sam integration with GUI selection
+# SAM Service 
 
-This sam_ros node is based on work done by:
-@article{buchanan2023online,
-  title={Online Estimation of Articulated Objects with Factor Graphs using Vision and Proprioceptive Sensing},
-  author={Buchanan, Russell and R{\"o}fer, Adrian and Moura, Jo{\~a}o and Valada, Abhinav and Vijayakumar, Sethu},
-  journal={arXiv preprint arXiv:2309.16343},
-  year={2023}
-}
+## Demo Video
+[SAM Service Demo](https://drive.google.com/file/d/1pzJgu_1q0TXr2X5bVeldBZIeMFzdJczH/view?usp=sharing)
 
-The node called `sam3d` serves as the main package where serveral important features are supported:
-#### Camera Automation Pipeline
-The script `camera_automation.py` automatically triggers recording from the camera and records a ROS bag file called `test_cam_data.bag` in `/media` subdirectory within the sam3d package. \
-media subdirectory may need to be created piror to start a new recording session. The script can be launched using `roslaunch camera_automation.launch`. 
+## Service Definition
 
-#### Bag File Preprocessing Pipeline
-The scripts `bag_publisher.py`, `listener.py`, `listener_depth.py` allows us to process the bag file by extracting videos to jpg files and depth maps. `bag_publisher.py` plays the ROS bag file while `listener.py` extracts each frame to `/media/test` subdirectory. `listener_depth.py` records the depth channel of each frame to `media/depthmap.npz`.
-These scripts can be launched using `roslaunch bag_subscribe.launch`.
+### Request
+sensor_msgs/Image image <br>
+geometry_msgs/Point[] points <br>
+int32[] point_masks <br>
+int32[] input_box <br>
+bool multimask <br>
+bool manual <br>
+sensor_msgs/Image mask_input <br>
 
-#### ros_sam Integration with Customizable GUI
-After processing the bag file. We can now utilize ros_sam wrapper with customizable GUI to generate segmentation masks. We can run `roslaunch ros_sam.launch` to trigger `autoprocess.py` script in sam3d. The `autoprocess.py` script launches the `SAMClient` from `ros_sam` and generates masks. It also allows visualization of the generated mask. The image path may need to manually adjusted. The image path is the local path to the image in `sam3d/media` subdirectory.
+### Response
+sensor_msgs/Image[] masks <br>
+float32[] scores <br>
+sensor_msgs/Image[] logits <br>
 
-#### How to use
-- Download model checkpoint into ros_sam models directory
-- Run `catkin_make` from home directory and `catkin_make install`
-- Run `source devel/setup.bash`
-- setup sam3d_gui and download all requirement files (Working on a comprehensive main function)
-- Run `rosrun ros_sam sam_node.py` (May need to init roscore beforehand)
-- On a separate window, launch `rosrun sam3d_gui test.py`
-- Run test file (GPU driver update needed)
+## Build the project
+Run this in the root directory:
+```
+catkin_make
+```
+
+## Running the service 
+In a fresh terminal, run the following:
+```
+source devel/setup.bash
+```
+then run:
+```
+rosrun sam3d sam_node.py
+```
+
+## Running the test client
+In a fresh terminal, run the following:
+```
+source devel/setup.bash
+```
+then run:
+```
+rosrun sam3d sam_test_client.py
+```
+
+
