@@ -28,4 +28,7 @@ terraform init
 terraform plan
 terraform apply
 ```
-The public IP will be returned as endpoints used by the ROS service. Note that the endpoint could also be ssh connections to other machines. 
+The public IP will be returned as endpoints used by the ROS service. Note that the endpoint could also be ssh connections to other machines. The infra could be destoyed with one line to provide on-demand flexibility for computational cost reduction. 
+```
+terraform destroy
+```
