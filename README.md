@@ -1,48 +1,31 @@
-# SAM Service 
+# SAM Server
 
-## Demo Video
-[SAM Service Demo](https://drive.google.com/file/d/1pzJgu_1q0TXr2X5bVeldBZIeMFzdJczH/view?usp=sharing)
+## Purpose
+This is the server side of SAM service that hosts SAM model and returns requests from client. This component can be scaled on cloud or hosted locally on another machine. The default port is set for `5000`. 
 
-## Service Definition
+## Terraform Infrastructure Setup
+The server has shown to work properly on Lambda Labs GPU instance, but it could also be hosted on AWS/Azure with terraform as infrastructure management tool. The terraform config files has been set up to deploy the server automatically on AWS with a few steps.
+### Pre setup
+Please create an IAM on your AWS account with FullEC2Access and FullVPCAccess. Then configure your awscli locally:
+```
+aws config
+```
+Make sure to enter your IAM ID and secret key. Then, create a keypair on EC2 for the server. A private key file will be downloaded. Generate a public key. 
+```
+ssh-keygen -t rsa -b 2048 -f my-public-key-path
+```
+Put the name of the keypair and local path to the generated public key file in `terraform.tfvars` in similar format:
+```
+key_name = "my-key-pair"
+public_key_path = "path/to/your/my-key-pair.pub"
+```
+The last step is identifying an AMI number and instance type you want to use. If there's no publicly available ones, you may want to create your own (especially for GPU instances). 
 
-### Request
-sensor_msgs/Image image <br>
-geometry_msgs/Point[] points <br>
-int32[] point_masks <br>
-int32[] input_box <br>
-bool multimask <br>
-bool manual <br>
-sensor_msgs/Image mask_input <br>
-
-### Response
-sensor_msgs/Image[] masks <br>
-float32[] scores <br>
-sensor_msgs/Image[] logits <br>
-
-## Build the project
-Run this in the root directory:
+### Create Infra
+Simply run
 ```
-catkin_make
+terraform init
+terraform plan
+terraform apply
 ```
-
-## Running the service 
-In a fresh terminal, run the following:
-```
-source devel/setup.bash
-```
-then run:
-```
-rosrun sam3d sam_node.py
-```
-
-## Running the test client
-In a fresh terminal, run the following:
-```
-source devel/setup.bash
-```
-then run:
-```
-rosrun sam3d sam_test_client.py
-```
-
-
+The public IP will be returned as endpoints used by the ROS service. Note that the endpoint could also be ssh connections to other machines. 
