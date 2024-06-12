@@ -1,5 +1,5 @@
 # Real-time Image Segmentation Client and Server solution for Meta SAM Model in ROS
-Segment Anything Segmentation in ROS
+Segment Anything in ROS
 
 ## Server Branch
 The server branch of this project is designed to alleviate GPU computation load when processing data stream on the client side. Sometimes it might be a good idea to let another local machine or even a cloud instance to host the SAM model and to make predictions. The server's main function is hosting the SAM model and processing segmentation API requests from the client ROS service through a python Flask server. 
