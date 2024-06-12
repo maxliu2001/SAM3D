@@ -1,3 +1,0 @@
-<launch>
-    <node pkg="sam3d" type="visualize.py" name="visualize" output="screen"/>
-</launch>

@@ -1,3 +1,0 @@
-<launch>
-    <node pkg="sam3d" type="mask_depth.py" name="matcher" output="screen"/>
-</launch>

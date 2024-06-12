@@ -1,4 +1,0 @@
-<launch>
-    <node pkg="sam3d" type="camera_automation.py" name="camera_automation" output="screen">
-    </node>
-</launch>
