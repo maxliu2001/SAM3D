@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-2"
+  region = "us-west-1"
 }
 
 # AWS key pairs for the project (EC2 key pairs)
@@ -35,8 +35,8 @@ resource "aws_security_group" "flask_sg" {
 }
 
 resource "aws_instance" "flask_server" {
-  ami           = "ami-04b70fa74e45c3917" # find aws ami
-  instance_type = "g3s.xlarge" # Instance type with GPU
+  ami           = "ami-06a23cefcbd0293c2" # find aws ami
+  instance_type = "t3.micro" # "g3.4xlarge" Instance type with GPU
   
   key_name = aws_key_pair.deployer.key_name
   security_groups = [aws_security_group.flask_sg.name]
